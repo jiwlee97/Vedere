@@ -10,9 +10,19 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Map;
 
+/**
+ * yaml을 파싱하기위한 유틸 클래스
+ */
 public class YamlParser {
     private static Yaml yaml = new Yaml();
 
+    /**
+     * yaml 파일을 파싱
+     * @param context 안드로이드 컨텍스트
+     * @param filePath 파싱하고자하는 파일의 이름
+     * @return yaml파일의 내용을 Map 객체에 반환
+     * @throws IOException 파일 입출력
+     */
     public Map<String, Object> parseYaml(Context context, String filePath) throws IOException {
         AssetManager am = context.getAssets();
         InputStream inputStream = am.open(filePath);
