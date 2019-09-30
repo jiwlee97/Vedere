@@ -20,6 +20,7 @@ import java.util.List;
  * http://tmapapi.sktelecom.com/main.html#android/sample/androidSample.sdk_download
  */
 public class PermissionManager {
+    private final String TAG = "PermissionManager";
     private Activity mAcitivity;
     private List<PermissionCallback> permissionCallbacks = new ArrayList<>();
 
@@ -34,7 +35,7 @@ public class PermissionManager {
      */
     public boolean check(String permission) {
         int permissionState = ContextCompat.checkSelfPermission(mAcitivity, permission);
-        Log.d("PermissionManager", "Check " + permission + "'s state is " + permissionState + ".");
+        Log.d(TAG, "Check " + permission + "'s state is " + permissionState + ".");
         return (permissionState == PackageManager.PERMISSION_GRANTED || Build.VERSION.SDK_INT < 23);
     }
 
@@ -45,7 +46,7 @@ public class PermissionManager {
      */
     public void request(String[] permissions, PermissionCallback callback) {
         permissionCallbacks.add(callback);
-        Log.d("PermissionManager", "request " + permissions.length + ".");
+        Log.d(TAG, "request " + permissions.length + ".");
         // Todo 안내문구
         ActivityCompat.requestPermissions(mAcitivity, permissions, permissionCallbacks.size()-1);
     }
@@ -65,16 +66,16 @@ public class PermissionManager {
             }
 
             if (grantResults.length == cntGrant) {
-                Log.d("PermissionManager", "response is granted.");
+                Log.d(TAG, "response is granted.");
                 permissionCallbacks.get(requestCode).granted();
             }
             else {
-                Log.d("PermissionManager", "response is failed.");
+                Log.d(TAG, "response is failed.");
                 permissionCallbacks.get(requestCode).denied();
             }
         }
         else {
-            Log.d("PermissionManager", "response is failed.");
+            Log.d(TAG, "response is failed.");
             permissionCallbacks.get(requestCode).denied();
         }
     }
