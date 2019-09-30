@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -11,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import com.project.vedere.interfaces.PermissionCallback;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * permission을 처리하기 위한 클래스
@@ -19,7 +21,7 @@ import java.util.ArrayList;
  */
 public class PermissionManager {
     private Activity mAcitivity;
-    private ArrayList<PermissionCallback> permissionCallbacks;
+    private List<PermissionCallback> permissionCallbacks = new ArrayList<>();
 
     public PermissionManager (Activity activity) {
         mAcitivity = activity;
@@ -32,6 +34,7 @@ public class PermissionManager {
      */
     public boolean check(String permission) {
         int permissionState = ContextCompat.checkSelfPermission(mAcitivity, permission);
+        Log.d("PermissionManager", "Check " + permission + "'s state is " + permissionState + ".");
         return (permissionState == PackageManager.PERMISSION_GRANTED || Build.VERSION.SDK_INT < 23);
     }
 
@@ -42,6 +45,7 @@ public class PermissionManager {
      */
     public void request(String[] permissions, PermissionCallback callback) {
         permissionCallbacks.add(callback);
+        Log.d("PermissionManager", "request " + permissions.length + ".");
         // Todo 안내문구
         ActivityCompat.requestPermissions(mAcitivity, permissions, permissionCallbacks.size()-1);
     }
@@ -61,13 +65,16 @@ public class PermissionManager {
             }
 
             if (grantResults.length == cntGrant) {
+                Log.d("PermissionManager", "response is granted.");
                 permissionCallbacks.get(requestCode).granted();
             }
             else {
+                Log.d("PermissionManager", "response is failed.");
                 permissionCallbacks.get(requestCode).denied();
             }
         }
         else {
+            Log.d("PermissionManager", "response is failed.");
             permissionCallbacks.get(requestCode).denied();
         }
     }
