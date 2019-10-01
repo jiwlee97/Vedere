@@ -1,4 +1,4 @@
-package com.project.vedere.utils;
+package com.project.vedere.managers;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -12,6 +12,7 @@ import java.util.Map;
 
 /**
  * yaml을 파싱하기위한 유틸 클래스
+ * ToDo 싱글톤
  */
 public class YamlParser {
     private static Yaml yaml = new Yaml();

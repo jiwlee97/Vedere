@@ -1,4 +1,4 @@
-package com.project.vedere.utils;
+package com.project.vedere.managers;
 
 import android.Manifest;
 import android.app.Activity;

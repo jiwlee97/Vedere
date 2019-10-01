@@ -1,4 +1,4 @@
-package com.project.vedere.utils;
+package com.project.vedere.managers;
 
 import android.Manifest;
 import android.app.Activity;
@@ -7,6 +7,7 @@ import android.location.Location;
 import android.util.Log;
 
 import com.project.vedere.interfaces.PermissionCallback;
+import com.project.vedere.utils.MyUtil;
 import com.skt.Tmap.TMapData;
 import com.skt.Tmap.TMapGpsManager;
 import com.skt.Tmap.TMapPoint;
