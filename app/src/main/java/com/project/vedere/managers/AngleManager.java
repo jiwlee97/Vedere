@@ -1,42 +1,37 @@
 package com.project.vedere.managers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
-import android.hardware.GeomagneticField;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.location.Location;
-import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.content.Context;
+import android.util.Log;
 
-import com.project.vedere.controller.MainActivity;
 import com.project.vedere.datatypes.directionInfo;
-import com.project.vedere.interfaces.AngleInterface;
 
 
 public class AngleManager{
 
+    private Activity activity;
     private Vibrator vibrator;
     private directionInfo dirInfo;
-    private float azimuth;
 
-    public float getAzimuth() {
-        return azimuth;
+    public AngleManager(Activity activity) {
+        this.activity = activity;
+        vibrator = (Vibrator)activity.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
-    public void setAzimuth(float azimuth) {
-        this.azimuth = azimuth;
-    }
+    public void setStartDirection(float azimuth, Point startPoint, Point arrivePoint) {
+        Log.d("azimuth",Float.toString(azimuth));
+        Log.d("angle",Float.toString(CalculateBearingAngle(startPoint,arrivePoint)));
+        if(azimuth-CalculateBearingAngle(startPoint,arrivePoint)<0.00001) {    // 나침반 방향과 가야할 방향이 같으면
+            vibrator.vibrate(1000 ); // 1초간 진동
+            Log.d("directionright","올바른방향");
 
-    public void setStartDirection(Point startPoint,Point arrivePoint) {
-        while( true ) {
-            if(azimuth==CalculateBearingAngle(startPoint,arrivePoint))    // 나침반 방향과 가야할 방향이 같으면
-                vibrator.vibrate(1000); // 1초간 진동
-            else if(azimuth!=CalculateBearingAngle(startPoint,arrivePoint))   // 다르면
-                vibrator.cancel();
-            else if( )   // 탈출조건
-                break;
+        }
+        else if(azimuth-CalculateBearingAngle(startPoint,arrivePoint)>=0.00001) {   // 다르면
+            vibrator.cancel();
+            Log.d("directionwrong","틀린방향");
         }
     }
 
