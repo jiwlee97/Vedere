@@ -12,7 +12,6 @@ import java.util.Map;
 
 /**
  * yaml을 파싱하기위한 유틸 클래스
- * ToDo 싱글톤
  */
 public class YamlParser {
     private Yaml yaml = new Yaml();

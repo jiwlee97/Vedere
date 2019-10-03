@@ -50,6 +50,7 @@ public class TMapManager implements TMapGpsManager.onLocationChangedCallback {
 //        mPathCallback = callback;
 //        mPoiCallback = callback;
         mCallback = callback;
+        mTMapData = new TMapData();
         setMap();
     }
 
@@ -82,21 +83,14 @@ public class TMapManager implements TMapGpsManager.onLocationChangedCallback {
 
     /**
      * 길 찾기
-     * ToDo TMapData를 싱글톤으로 만들 수 있을까?
      * @param startPoint : 시작 위치
      * @param endPoint : 도착 위치
      */
     public void findPath(TMapPoint startPoint, TMapPoint endPoint) {
-        if (mTMapData == null) {
-            mTMapData = new TMapData();
-        }
         mTMapData.findPathDataAllType(TMapData.TMapPathType.PEDESTRIAN_PATH, startPoint, endPoint, mCallback);
     }
 
     public void findPOI(String target) {
-        if (mTMapData == null) {
-            mTMapData = new TMapData();
-        }
         mTMapData.findAllPOI(target, mCallback);
     }
 
