@@ -12,6 +12,7 @@ import android.os.Vibrator;
 
 import com.project.vedere.R;
 import com.project.vedere.managers.AngleManager;
+import com.skt.Tmap.TMapPoint;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
@@ -65,8 +66,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 float[] orientation = new float[3];
                 SensorManager.getOrientation(R, orientation);
                 float azimuth = (float) Math.toDegrees(orientation[0]);
-                Point startPoint = new Point();
-                Point arrivePoint = new Point();
+
+                TMapPoint startPoint = new TMapPoint(37569758,126977022);
+                TMapPoint arrivePoint = new TMapPoint(37570594,126997589);
                 angleManager.setStartDirection(azimuth,startPoint,arrivePoint);
                 mPitch = (float) Math.toDegrees(orientation[1]);
                 mRoll = (float) Math.toDegrees(orientation[2]);

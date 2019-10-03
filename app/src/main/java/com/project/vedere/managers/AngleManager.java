@@ -8,6 +8,7 @@ import android.os.Vibrator;
 import android.util.Log;
 
 import com.project.vedere.datatypes.directionInfo;
+import com.skt.Tmap.TMapPoint;
 
 
 public class AngleManager{
@@ -21,29 +22,29 @@ public class AngleManager{
         vibrator = (Vibrator)activity.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
-    public void setStartDirection(float azimuth, Point startPoint, Point arrivePoint) {
+    public void setStartDirection(float azimuth, TMapPoint startPoint, TMapPoint arrivePoint) {
         Log.d("azimuth",Float.toString(azimuth));
         Log.d("angle",Float.toString(CalculateBearingAngle(startPoint,arrivePoint)));
-        if(azimuth-CalculateBearingAngle(startPoint,arrivePoint)<0.00001) {    // 나침반 방향과 가야할 방향이 같으면
+        if(azimuth-CalculateBearingAngle(startPoint,arrivePoint)<=0.00001) {    // 나침반 방향과 가야할 방향이 같으면
             vibrator.vibrate(1000 ); // 1초간 진동
             Log.d("directionright","올바른방향");
 
         }
-        else if(azimuth-CalculateBearingAngle(startPoint,arrivePoint)>=0.00001) {   // 다르면
+        else if(azimuth-CalculateBearingAngle(startPoint,arrivePoint)>0.00001) {   // 다르면
             vibrator.cancel();
             Log.d("directionwrong","틀린방향");
         }
     }
 
     // 두 점 사이의 방위각을 계산
-    private float CalculateBearingAngle(Point startPoint,Point arrivePoint){
+    private float CalculateBearingAngle(TMapPoint startPoint,TMapPoint arrivePoint){
         Location userLoc = new Location("service Provider");
-        userLoc.setLatitude(startPoint.x);
-        userLoc.setLongitude(startPoint.y);
+        userLoc.setLatitude(startPoint.getLatitude());
+        userLoc.setLongitude(startPoint.getLongitude());
 
         Location destLoc = new Location("service Provider");
-        destLoc.setLatitude(arrivePoint.x);
-        destLoc.setLongitude(arrivePoint.y);
+        destLoc.setLatitude(arrivePoint.getLatitude());
+        destLoc.setLongitude(arrivePoint.getLongitude());
         float bearTo = userLoc.bearingTo(destLoc);
         if( bearTo < 0 )
             bearTo += 360;
@@ -59,7 +60,7 @@ public class AngleManager{
         double gotoLog = dirInfo.getArrivePoint().y;
         int turnInfo = dirInfo.getTurnInfo();
 
-        double angle = calculateAngle(gotoLat,gotoLog,startLat,startLog,priorLat,priorLog);
+        //double angle = calculateAngle(gotoLat,gotoLog,startLat,startLog,priorLat,priorLog);
         String text = "";
         switch (turnInfo){
             case 11:
@@ -135,14 +136,14 @@ public class AngleManager{
         return text;
     }
 
-    private double calculateAngle(double startLat,double startLog,
-                                  double gotoLat,double gotoLog,
-                                  double latAfter5,double logAfter5){
-        double angle = Math.atan2(gotoLat-startLat,gotoLog-startLog)-Math.atan2(latAfter5-startLat,logAfter5-startLog);
-        angle *= 360.0/(2.0*Math.PI);
-        // 0<=angle<=180이면 오른쪽으로 angle만큼 돌아야함
-        // -180<=angle<=0이면 왼쪽으로 angle만큼 돌아야함
-        return angle;
-    }
+//    private double calculateAngle(double startLat,double startLog,
+//                                  double gotoLat,double gotoLog,
+//                                  double latAfter5,double logAfter5){
+//        double angle = Math.atan2(gotoLat-startLat,gotoLog-startLog)-Math.atan2(latAfter5-startLat,logAfter5-startLog);
+//        angle *= 360.0/(2.0*Math.PI);
+//        // 0<=angle<=180이면 오른쪽으로 angle만큼 돌아야함
+//        // -180<=angle<=0이면 왼쪽으로 angle만큼 돌아야함
+//        return angle;
+//    }
 
 }
