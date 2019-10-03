@@ -24,7 +24,19 @@ public class PermissionManager {
     private Activity mAcitivity;
     private List<PermissionCallback> permissionCallbacks = new ArrayList<>();
 
-    public PermissionManager (Activity activity) {
+    private PermissionManager() {
+
+    }
+
+    private static class PermissionManagerHolder {
+        public static final PermissionManager INSTANCE = new PermissionManager();
+    }
+
+    public static PermissionManager getInstance() {
+        return PermissionManagerHolder.INSTANCE;
+    }
+
+    public void setActivity(Activity activity) {
         mAcitivity = activity;
     }
 

@@ -15,8 +15,19 @@ import java.util.Map;
  * ToDo 싱글톤
  */
 public class YamlParser {
-    private static Yaml yaml = new Yaml();
+    private Yaml yaml = new Yaml();
 
+    private YamlParser() {
+
+    }
+
+    private static class YamlParserHolder {
+        public static final YamlParser INSTANCE = new YamlParser();
+    }
+
+    public static YamlParser getInstance() {
+        return YamlParserHolder.INSTANCE;
+    }
     /**
      * yaml 파일을 파싱
      * @param context 안드로이드 컨텍스트
