@@ -15,6 +15,10 @@ import java.util.Queue;
 public class DirectionModel {
     private Queue<DirectionInfo> mDirections = new LinkedList<>();
 
+    public Queue<DirectionInfo> getModel() {
+        return mDirections;
+    }
+
     public void updateModel(Document document) {
         mDirections.clear();
         DirectionInfo temp = new DirectionInfo();
@@ -57,8 +61,5 @@ public class DirectionModel {
         temp.setArrivePoint(new TMapPoint(0, 0));
         temp.setTurnInfo(201);
         mDirections.add(temp.clone());
-        while (!mDirections.isEmpty()) {
-            Log.d("Model", mDirections.poll().toString());
-        }
     }
 }
