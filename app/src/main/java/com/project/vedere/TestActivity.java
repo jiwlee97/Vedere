@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.project.vedere.interfaces.TMapCallback;
+import com.project.vedere.managers.AngleManager;
 import com.project.vedere.managers.TMapManager;
+import com.project.vedere.model.DirectionInfo;
 import com.project.vedere.model.DirectionModel;
 import com.skt.Tmap.TMapPOIItem;
 import com.skt.Tmap.TMapPoint;
@@ -14,6 +16,7 @@ import com.skt.Tmap.TMapPoint;
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
+import java.util.Queue;
 
 public class TestActivity extends AppCompatActivity implements TMapCallback {
 
@@ -39,5 +42,11 @@ public class TestActivity extends AppCompatActivity implements TMapCallback {
         model.updateModel(document);
         while (!model.getModel().isEmpty())
             Log.d("Model", model.getModel().poll().toString());
+    }
+
+    public void setTurnInfo(DirectionModel dirModel){
+        AngleManager angleManager;
+        Queue<DirectionInfo> mDirectionInfo = dirModel.getModel();
+        angleManager.setAllTurnInfo(mDirectionInfo);
     }
 }

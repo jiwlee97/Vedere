@@ -26,12 +26,12 @@ public class AngleManager{
     public void setStartDirection(float azimuth, TMapPoint startPoint, TMapPoint arrivePoint) {
         Log.d("azimuth",Float.toString(azimuth));
         Log.d("angle",Float.toString(CalculateBearingAngle(startPoint,arrivePoint)));
-        if(azimuth-CalculateBearingAngle(startPoint,arrivePoint)<=0.00001) {    // 나침반 방향과 가야할 방향이 같으면
+        if(Math.abs(azimuth-CalculateBearingAngle(startPoint,arrivePoint))<=5) {    // 나침반 방향과 가야할 방향이 같으면
             vibrator.vibrate(1000 ); // 1초간 진동
             Log.d("directionright","올바른방향");
 
         }
-        else if(azimuth-CalculateBearingAngle(startPoint,arrivePoint)>0.00001) {   // 다르면
+        else if(Math.abs(azimuth-CalculateBearingAngle(startPoint,arrivePoint))>5) {   // 다르면
             vibrator.cancel();
             Log.d("directionwrong","틀린방향");
         }

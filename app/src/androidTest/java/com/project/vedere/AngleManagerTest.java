@@ -1,8 +1,6 @@
 package com.project.vedere;
 
 import android.Manifest;
-import android.graphics.Point;
-import android.util.Log;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
@@ -10,7 +8,7 @@ import androidx.test.rule.GrantPermissionRule;
 
 import com.project.vedere.controller.MainActivity;
 import com.project.vedere.managers.AngleManager;
-import com.project.vedere.model.directionInfo;
+import com.project.vedere.model.DirectionInfo;
 import com.skt.Tmap.TMapPoint;
 
 import org.junit.Before;
@@ -38,14 +36,14 @@ public class AngleManagerTest {
 
     @Test
     public void test() {
-        Queue<directionInfo> queue = new PriorityQueue<directionInfo>();
+        Queue<DirectionInfo> queue = new PriorityQueue<DirectionInfo>();
 //
 //        float azimuth = 176.77115f;
         TMapPoint startPoint = new TMapPoint(37.569758,12.6977022);
         TMapPoint arrivePoint = new TMapPoint(37.570594,12.6997589);
         TMapPoint priorStartPoint = new TMapPoint(37.568000,12.6977300);
         int turnInfo = 0;
-        directionInfo dirInfo = new directionInfo(startPoint,arrivePoint,priorStartPoint,turnInfo);
+        DirectionInfo dirInfo = new DirectionInfo(startPoint,arrivePoint,priorStartPoint,turnInfo);
         queue.add(dirInfo);
         angleManager.setAllTurnInfo(queue);
     }

@@ -1,18 +1,27 @@
 package com.project.vedere.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
-import android.graphics.Point;
+import android.Manifest;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.project.vedere.R;
 import com.project.vedere.managers.AngleManager;
+import com.project.vedere.managers.STTManager;
 import com.skt.Tmap.TMapPoint;
+
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
@@ -22,9 +31,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor mMagneticField;
     private float mPitch, mRoll;
     private AngleManager angleManager;
-
     float[] mGravity;
     float[] mGeomagnetic;
+
+    // STT
+    Intent intent;
+    SpeechRecognizer mRecognizer;
+    Button sttBtn;
+    TextView textView;
+    final int PERMISSION = 1;
+    private STTManager sttManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +51,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mMagneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        if( Build.VERSION.SDK_INT>=23 ){    //퍼미션체크
+            ActivityCompat.requestPermissions(this,new String[]{
+                    Manifest.permission.INTERNET,Manifest.permission.RECORD_AUDIO}, PERMISSION);
+        }
+        textView = (TextView)findViewById(R.id.sttResult);
+        sttBtn = (Button)findViewById(R.id.sttStart);
+
+        // 사용자에게 음성을 요구하고 음성 인식기를 통해 전송하는 활동 시작
+        intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        // 음성 인식을 위한 음성 인식기의 의도에 사용되는 여분의 키
+        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,getPackageName());
+        // 음성을 번역할 언어를 설정
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ko-KR");
+        sttBtn.setOnClickListener(v -> {
+                mRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+                mRecognizer.setRecognitionListener(sttManager.getListener());
+                mRecognizer.startListening(intent);
+        });
     }
 
     @Override
