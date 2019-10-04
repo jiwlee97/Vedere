@@ -6,7 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
-import com.project.vedere.controller.MainActivity;
+import com.project.vedere.controller.SensorTestActivity;
 import com.project.vedere.managers.AngleManager;
 import com.project.vedere.model.DirectionInfo;
 import com.skt.Tmap.TMapPoint;
@@ -27,10 +27,10 @@ public class AngleManagerTest {
     public GrantPermissionRule mRuntimePermissionRule = GrantPermissionRule.grant(Manifest.permission.VIBRATE);
 
     @Rule
-    public ActivityTestRule<MainActivity> intentTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<SensorTestActivity> intentTestRule = new ActivityTestRule<>(SensorTestActivity.class);
     @Before
     public void setup() {
-        MainActivity activity = intentTestRule.getActivity();
+        SensorTestActivity activity = intentTestRule.getActivity();
         angleManager = new AngleManager(activity);
     }
 

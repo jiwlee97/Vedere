@@ -23,7 +23,7 @@ import com.project.vedere.managers.STTManager;
 import com.skt.Tmap.TMapPoint;
 
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener{
+public class SensorTestActivity extends AppCompatActivity implements SensorEventListener{
 
     private Vibrator vibrator;
     private SensorManager mSensorManager;

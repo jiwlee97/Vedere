@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".controller.MainActivity">
+    tools:context=".controller.SensorTestActivity">
     <TextView
         android:id="@+id/sttResult"
         android:layout_width="wrap_content"

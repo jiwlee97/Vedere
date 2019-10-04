@@ -21,7 +21,7 @@ import java.util.Map;
  * TMap API 매니저
  * 싱글톤 객체
  */
-public class TMapManager implements TMapGpsManager.onLocationChangedCallback {
+public class TMapManager{
     private Activity mActivity;
     private Context mContext;
 
@@ -42,6 +42,10 @@ public class TMapManager implements TMapGpsManager.onLocationChangedCallback {
     }
 
     private TMapManager() {
+    }
+
+    public TMapPoint getLocation() {
+        return gps.getLocation();
     }
 
     public void initManager(Activity activity, Context context, TMapCallback callback) {
@@ -68,17 +72,6 @@ public class TMapManager implements TMapGpsManager.onLocationChangedCallback {
         else {
             prepareGPS();
         }
-    }
-
-    /**
-     * GPS를 통한 위치 변화 확인,
-     * ToDO 위치 변화 시 사용자에게 알림을 줄 것
-     * @param location : 현재 위치
-     */
-    @Override
-    public void onLocationChange(Location location) {
-        Log.d("GPS", "location is " + location.getLatitude() + " " + location.getLongitude());
-
     }
 
     /**
