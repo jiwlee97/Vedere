@@ -2,6 +2,7 @@ package com.project.vedere;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -39,5 +40,10 @@ public class TestActivity extends AppCompatActivity implements TMapCallback {
         model.updateModel(document);
         while (!model.getModel().isEmpty())
             Log.d("Model", model.getModel().poll().toString());
+    }
+
+    @Override
+    public void onLocationChange(Location location) {
+
     }
 }
