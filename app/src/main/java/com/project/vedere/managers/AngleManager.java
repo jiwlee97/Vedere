@@ -2,13 +2,14 @@ package com.project.vedere.managers;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Point;
 import android.location.Location;
 import android.os.Vibrator;
 import android.util.Log;
 
-import com.project.vedere.datatypes.directionInfo;
+import com.project.vedere.model.directionInfo;
 import com.skt.Tmap.TMapPoint;
+
+import java.util.Queue;
 
 
 public class AngleManager{
@@ -51,16 +52,42 @@ public class AngleManager{
         return bearTo;
     }
 
+    public void setAllTurnInfo(Queue<directionInfo> queue){
+        directionInfo dirInfo = queue.poll();
+        int turnInfo = dirInfo.getTurnInfo();
+        if( turnInfo==0 ){
+            double angle = calculateAngle(dirInfo.getStartPoint(),dirInfo.getArrivePoint(),dirInfo.getPriorStartPoint());
+            if( -15.0<angle && angle<15.0 )
+                dirInfo.setTurnInfo(11);    // 직진
+            else if( 15.0<=angle && angle<45.0 )
+                dirInfo.setTurnInfo(180);   //1시방향 우회전
+            else if( 45.0<=angle && angle<75.0 )
+                dirInfo.setTurnInfo(18);    // 2시방향 우회전
+            else if( 75.0<=angle && angle<105.0 )
+                dirInfo.setTurnInfo(13);   // 3시방향 우회전
+            else if( 105.0<=angle && angle<135.0 )
+                dirInfo.setTurnInfo(19);    // 4시방향 우회전
+            else if( 135.0<=angle && angle<165.0 )
+                dirInfo.setTurnInfo(20);    // 5시방향 우회전
+            else if( (165.0<=angle && angle<=180.0 ) || (-180<=angle && angle<=165) )
+                dirInfo.setTurnInfo(14);    // 유턴
+            else if( -45.0<=angle && angle<=-15 )
+                dirInfo.setTurnInfo(170);   // 11시 방향 좌회전
+            else if( -75.0<=angle && angle<-45.0 )
+                dirInfo.setTurnInfo(17);    // 10시 방향 죄화전
+            else if( -105.0<=angle && angle<-75.0 )
+                dirInfo.setTurnInfo(160);   // 9시 방향 좌회전
+            else if( -135.0<=angle && angle<-105.0 )
+                dirInfo.setTurnInfo(16);    // 8시 방향 좌회전
+            else if( -165.0<angle && angle<-135.0 )
+                dirInfo.setTurnInfo(15);    // 7시 방향 좌회전
+
+        }
+    }
+
     public String setGotoDirection(directionInfo dirInfo) {
-        double priorLat = dirInfo.getPriorStartPoint().x;
-        double priorLog = dirInfo.getPriorStartPoint().y;
-        double startLat = dirInfo.getStartPoint().x;
-        double startLog = dirInfo.getStartPoint().y;
-        double gotoLat = dirInfo.getArrivePoint().x;
-        double gotoLog = dirInfo.getArrivePoint().y;
         int turnInfo = dirInfo.getTurnInfo();
 
-        //double angle = calculateAngle(gotoLat,gotoLog,startLat,startLog,priorLat,priorLog);
         String text = "";
         switch (turnInfo){
             case 11:
@@ -75,17 +102,32 @@ public class AngleManager{
             case 14:
                 text = "유턴 하세요";
                 break;
+            case 15:
+                text = "7시 방향 좌회전하세요.";
+                break;
             case 16:
                 text = "8시 방향 좌회전하세요";
                 break;
+            case 160:
+                text = "9시 방향 좌회전하세요";
+                break;
             case 17:
-                text = "10시 방향 죄회전하세요";
+                text = "10시 방향 좌회전하세요";
+                break;
+            case 170:
+                text = "11시 방향 좌회전하세요";
+                break;
+            case 180:
+                text = "1시방향 우회전하세요";
                 break;
             case 18:
                 text = "2시 방향 우회전하세요";
                 break;
             case 19:
                 text = "4시 방향 우회전하세요";
+                break;
+            case 20:
+                text = "5시 방향 우회전하세요";
                 break;
             case 125:
                 text = "육교입니다";
@@ -136,14 +178,13 @@ public class AngleManager{
         return text;
     }
 
-//    private double calculateAngle(double startLat,double startLog,
-//                                  double gotoLat,double gotoLog,
-//                                  double latAfter5,double logAfter5){
-//        double angle = Math.atan2(gotoLat-startLat,gotoLog-startLog)-Math.atan2(latAfter5-startLat,logAfter5-startLog);
-//        angle *= 360.0/(2.0*Math.PI);
-//        // 0<=angle<=180이면 오른쪽으로 angle만큼 돌아야함
-//        // -180<=angle<=0이면 왼쪽으로 angle만큼 돌아야함
-//        return angle;
-//    }
+    private double calculateAngle(TMapPoint startPoint,TMapPoint arrivePoint,TMapPoint priorPoint){
+        double angle = Math.atan2(arrivePoint.getLatitude()-startPoint.getLatitude(),arrivePoint.getLongitude()-startPoint.getLongitude())
+                        -Math.atan2(priorPoint.getLatitude()-startPoint.getLatitude(),priorPoint.getLongitude()-startPoint.getLongitude());
+        angle *= 360.0/(2.0*Math.PI);
+        // 0<=angle<=180이면 오른쪽으로 angle만큼 돌아야함
+        // -180<=angle<=0이면 왼쪽으로 angle만큼 돌아야함
+        return angle;
+    }
 
 }
