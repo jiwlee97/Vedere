@@ -16,7 +16,7 @@ import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 
-public class TestActivity extends AppCompatActivity implements TMapCallback {
+public class TMapTestActivity extends AppCompatActivity implements TMapCallback {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
