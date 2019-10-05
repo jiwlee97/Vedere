@@ -1,52 +1,89 @@
 package com.project.vedere.managers;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+
+import com.project.vedere.R;
+
 import java.util.ArrayList;
 
 public class STTManager {
-    private Activity activity;
-    // STT
-    Intent intent;
-    SpeechRecognizer mRecognizer;
-    Button sttBtn;
-    TextView textView;
-    final int PERMISSION = 1;
 
-    public RecognitionListener getListener(){
-        return listener;
+    private Activity activity;
+
+    private Intent intent;
+    private SpeechRecognizer mRecognizer;
+    private Button sttBtn;
+    private TextView textView;
+    private final int PERMISSION = 1;
+
+    public STTManager(){}
+
+    public STTManager(Activity activity){
+        this.activity = activity;
     }
+
+    public void callSTTManager(){
+        if( Build.VERSION.SDK_INT>=23 ){    //퍼미션체크
+            ActivityCompat.requestPermissions(activity,new String[]{
+                    Manifest.permission.INTERNET,Manifest.permission.RECORD_AUDIO}, PERMISSION);
+        }
+        textView = activity.findViewById(R.id.sttResult);
+        sttBtn = activity.findViewById(R.id.sttStart);
+
+        // 사용자에게 음성을 요구하고 음성 인식기를 통해 전송하는 활동 시작
+        intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        // 음성 인식을 위한 음성 인식기의 의도에 사용되는 여분의 키
+        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,activity.getPackageName());
+        // 음성을 번역할 언어를 설정
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ko-KR");
+
+        if(SpeechRecognizer.isRecognitionAvailable(activity)) {
+            SpeechRecognizer sr = SpeechRecognizer.createSpeechRecognizer(activity);
+        } else {
+            // SOME SORT OF ERROR
+            // Todo: TTS 추가
+            Toast.makeText(activity.getApplicationContext(),"구글 어플 사용을 설정해주세요.",Toast.LENGTH_SHORT).show();
+        }
+        sttBtn.setOnClickListener(v -> {
+            mRecognizer = SpeechRecognizer.createSpeechRecognizer(activity);
+            mRecognizer.setRecognitionListener(listener);
+            mRecognizer.startListening(intent);
+        });
+    }
+
     private RecognitionListener listener = new RecognitionListener() {
         @Override
         public void onReadyForSpeech(Bundle params) {
+            // ToDo: TTS 추가
             Toast.makeText(activity.getApplicationContext(),"음성인식을 시작합니다.",Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onBeginningOfSpeech() {
-
         }
 
         @Override
         public void onRmsChanged(float rmsdB) {
-
         }
 
         @Override
         public void onBufferReceived(byte[] buffer) {
-
         }
 
         @Override
         public void onEndOfSpeech() {
-
         }
 
         @Override
