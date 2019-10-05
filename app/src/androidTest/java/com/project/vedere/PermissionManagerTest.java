@@ -1,13 +1,12 @@
 package com.project.vedere;
 
 import android.Manifest;
-import android.app.Activity;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
+import com.project.vedere.controller.MainActivity;
 import com.project.vedere.utils.PermissionManager;
 
 import org.junit.Before;

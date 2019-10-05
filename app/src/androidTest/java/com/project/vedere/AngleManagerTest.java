@@ -6,7 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 
-import com.project.vedere.controller.SensorTestActivity;
+import com.project.vedere.test.SensorTestActivity;
 import com.project.vedere.managers.AngleManager;
 import com.project.vedere.model.DirectionInfo;
 import com.skt.Tmap.TMapPoint;

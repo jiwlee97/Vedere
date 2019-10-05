@@ -6,12 +6,8 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".controller.SensorTestActivity">
-    <TextView
-        android:id="@+id/sttResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="음성인식 결과가 여기에 표시됩니다." />
+    tools:context=".controller.MainActivity">
+
     <Button
         android:id="@+id/sttStart"
         android:layout_width="wrap_content"

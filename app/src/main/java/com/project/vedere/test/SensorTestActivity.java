@@ -1,4 +1,4 @@
-package com.project.vedere.controller;
+package com.project.vedere.test;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;

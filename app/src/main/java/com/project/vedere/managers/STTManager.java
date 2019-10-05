@@ -3,18 +3,14 @@ package com.project.vedere.managers;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import android.widget.Button;
-import android.widget.TextView;
+import android.util.Log;
 import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
-
-import com.project.vedere.R;
+import com.project.vedere.interfaces.PermissionCallback;
 
 import java.util.ArrayList;
 
@@ -24,24 +20,53 @@ public class STTManager {
 
     private Intent intent;
     private SpeechRecognizer mRecognizer;
-    private Button sttBtn;
-    private TextView textView;
     private final int PERMISSION = 1;
+    private int status = 0;
+    ArrayList<String> matches;
 
-    public STTManager(){}
 
     public STTManager(Activity activity){
         this.activity = activity;
     }
 
-    public void callSTTManager(){
-        if( Build.VERSION.SDK_INT>=23 ){    //퍼미션체크
-            ActivityCompat.requestPermissions(activity,new String[]{
-                    Manifest.permission.INTERNET,Manifest.permission.RECORD_AUDIO}, PERMISSION);
-        }
-        textView = activity.findViewById(R.id.sttResult);
-        sttBtn = activity.findViewById(R.id.sttStart);
+    public void initManager(){
+        boolean internetCheck = PermissionManager.getInstance().check(Manifest.permission.INTERNET);
+        boolean recordAudioCheck = PermissionManager.getInstance().check(Manifest.permission.RECORD_AUDIO);
 
+        if( internetCheck && recordAudioCheck ){
+            setSTT();
+        }
+        else if(!internetCheck && !recordAudioCheck){
+            String[] permissionArr = new String[]{Manifest.permission.INTERNET,Manifest.permission.RECORD_AUDIO};
+            PermissionManager.getInstance().request(permissionArr, new PermissionCallback() {
+                @Override
+                public void granted() {
+                    setSTT();
+                }
+                @Override
+                public void denied() {
+                    TTSManager.getInstance().speak("권한 확인 후 앱을 다시 실행해주세요");
+                    activity.finishAffinity();
+                }
+            });
+        }
+        else {
+            String[] permissionArr = !internetCheck ? new String[]{Manifest.permission.INTERNET} : new String[]{Manifest.permission.RECORD_AUDIO};
+            PermissionManager.getInstance().request(permissionArr, new PermissionCallback() {
+                @Override
+                public void granted() {
+                    setSTT();
+                }
+                @Override
+                public void denied() {
+                    TTSManager.getInstance().speak("권한 확인 후 앱을 다시 실행해주세요");
+                    activity.finishAffinity();
+                }
+            });
+        }
+    }
+
+    public void setSTT(){
         // 사용자에게 음성을 요구하고 음성 인식기를 통해 전송하는 활동 시작
         intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         // 음성 인식을 위한 음성 인식기의 의도에 사용되는 여분의 키
@@ -56,11 +81,13 @@ public class STTManager {
             // Todo: TTS 추가
             Toast.makeText(activity.getApplicationContext(),"구글 어플 사용을 설정해주세요.",Toast.LENGTH_SHORT).show();
         }
-        sttBtn.setOnClickListener(v -> {
-            mRecognizer = SpeechRecognizer.createSpeechRecognizer(activity);
-            mRecognizer.setRecognitionListener(listener);
-            mRecognizer.startListening(intent);
-        });
+        mRecognizer = SpeechRecognizer.createSpeechRecognizer(activity);
+        mRecognizer.setRecognitionListener(listener);
+    }
+
+
+    public void runmRecognizer(){
+        mRecognizer.startListening(intent);
     }
 
     private RecognitionListener listener = new RecognitionListener() {
@@ -72,6 +99,7 @@ public class STTManager {
 
         @Override
         public void onBeginningOfSpeech() {
+            status = 0;
         }
 
         @Override
@@ -84,10 +112,12 @@ public class STTManager {
 
         @Override
         public void onEndOfSpeech() {
+            status = 1;
         }
 
         @Override
         public void onError(int error) {
+            status = 2;
             String message;
             switch (error){
                 case SpeechRecognizer.ERROR_AUDIO: {
@@ -137,19 +167,27 @@ public class STTManager {
         @Override
         public void onResults(Bundle results) {
             //말을 하면 ArrayList에 단어를 넣고 textView에 단어를 이어줍니다.
-            ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-            for(int i=0;i<matches.size();++i)
-                textView.setText(matches.get(i));
+            matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            for(int i=0;i<matches.size();++i) {
+                Log.d("stt", i + " " + matches.get(i));
+            }
         }
 
         @Override
         public void onPartialResults(Bundle partialResults) {
-
         }
 
         @Override
         public void onEvent(int eventType, Bundle params) {
-
         }
     };
+
+    public int getStatus() {
+        return status;
+    }
+
+    public ArrayList<String> getMatches() {
+        return matches;
+    }
+
 }

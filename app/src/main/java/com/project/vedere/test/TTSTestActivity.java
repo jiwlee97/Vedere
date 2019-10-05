@@ -1,10 +1,11 @@
-package com.project.vedere;
+package com.project.vedere.test;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 
+import com.project.vedere.R;
 import com.project.vedere.managers.TTSManager;
 
 import java.util.Locale;

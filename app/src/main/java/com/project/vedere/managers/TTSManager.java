@@ -28,7 +28,7 @@ public class TTSManager {
         tts = new TextToSpeech(activity, callback);
     }
 
-    public void speack(String text) {
+    public void speak(String text) {
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 }
