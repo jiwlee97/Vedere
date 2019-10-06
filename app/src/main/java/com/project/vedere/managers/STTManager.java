@@ -22,8 +22,8 @@ public class STTManager {
     private SpeechRecognizer mRecognizer;
     private final int PERMISSION = 1;
     private int status;
-    ArrayList<String> matches;
-    String answer="";
+    private ArrayList<String> matches;
+    private String answer="";
 
 
     public STTManager(Activity activity){
@@ -67,7 +67,7 @@ public class STTManager {
         }
     }
 
-    public void setSTT(){
+    private void setSTT(){
         // 사용자에게 음성을 요구하고 음성 인식기를 통해 전송하는 활동 시작
         intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         // 음성 인식을 위한 음성 인식기의 의도에 사용되는 여분의 키
@@ -127,8 +127,8 @@ public class STTManager {
 
         @Override
         public void onError(int error) {
-            status = 0;
-            String message="";
+            status = 2;
+            String message;
             switch (error){
                 case SpeechRecognizer.ERROR_NETWORK:{
                     message = "네트워크 에러입니다.";

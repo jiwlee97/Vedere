@@ -2,19 +2,18 @@ package com.project.vedere.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.project.vedere.R;
 import com.project.vedere.interfaces.TMapCallback;
@@ -32,9 +31,9 @@ import com.skt.Tmap.TMapPoint;
 import com.skt.Tmap.TMapPolyLine;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Locale;
 import java.util.PriorityQueue;
 
@@ -57,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     private Sensor mMagneticField;
     private int mode;
     private TurnInfoManager turnInfoManager;
+    private TextView tv;
 
     LocationManager locationManager;
 
@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         sttManager = new STTManager(this);
         turnInfoManager = new TurnInfoManager();
 
+        tv = findViewById(R.id.textView);
+
         PermissionManager.getInstance().setActivity(this);
         sttManager.initManager();
         angleManager = new AngleManager(this );
@@ -78,35 +80,20 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
         TMapManager.getInstance().initManager(this,this,this);
         TMapManager.getInstance().setGPS();
-        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                Log.d("checklocation","akajajajaj");
-            }
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
 
         stopVibrator = findViewById(R.id.stopVibrator);
 
         stopVibrator.setOnClickListener(v -> {
-            mSensorManager.unregisterListener(this,mAccelerometer);
-            mSensorManager.unregisterListener(this,mMagneticField);
-            mode = 1;
+            if(destination == null) {
+                TTSManager.getInstance().setStatus(2);
+                TTSManager.getInstance().speak("안녕하세요. 베데레 입니다. 목적지를 말씀해주세요.");
+            }
+            else{
+                mSensorManager.unregisterListener(this,mAccelerometer);
+                mSensorManager.unregisterListener(this,mMagneticField);
+                mode = 1;
+            }
         });
 
         utteranceProgressListener = new UtteranceProgressListener() {
@@ -118,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             @Override
             public void onDone(String utteranceId) {
                 String answer="dfdf";
-                if(TTSManager.getInstance().getStatus() != 5)
+                if(TTSManager.getInstance().getStatus() != 5 && TTSManager.getInstance().getStatus() != 0 )
                     answer = returnAnswer();
                 Log.d("목적지", answer);
                 Log.d("status",Integer.toString(TTSManager.getInstance().getStatus()));
@@ -196,12 +183,16 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         sttManager.runmRecognizer();
         while (sttManager.getStatus() == 0)
             ;
+        if(sttManager.getStatus() == 2){
+            return "";
+        }
         return sttManager.getAnswer();
     }
 
     public boolean checkYes(String answer){
         return answer.equals("네")||answer.equals("녜")||answer.equals("예")||answer.equals("넹")||answer.equals("그래")||answer.equals("응")||answer.equals("어");
     }
+
 
     @Override
     public void onInit(int status) {
@@ -211,9 +202,12 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         }
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
+
 
         if(destination == null) {
             TTSManager.getInstance().setStatus(2);
@@ -224,6 +218,12 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             TTSManager.getInstance().setStatus(1);
             TTSManager.getInstance().speak(text);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        TTSManager.getInstance().getTTS().stop();
     }
 
     @Override
@@ -261,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     @Override
     public void onLocationChange(Location location) {
         Log.d("checklocation","akajajajaj");
+        tv.setText("latitude: " +location.getLatitude()+",  longitude: "+ location.getLongitude());
         if(mode == 1) {// 안내모드
             TMapPolyLine temp = new TMapPolyLine();
             temp.addLinePoint(new TMapPoint(location.getLatitude(),location.getLongitude()));

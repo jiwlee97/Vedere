@@ -34,7 +34,7 @@ public class TMapManager{
     private static boolean initMap = false;
 
     private static class TMapManagerHolder {
-        public static TMapManager INSTANCE = new TMapManager();
+        private static TMapManager INSTANCE = new TMapManager();
     }
 
     public static TMapManager getInstance() {
@@ -67,7 +67,7 @@ public class TMapManager{
      * GPS 초기화
      */
     public void setGPS() {
-        initGPS();
+//        initGPS();
         if (PermissionManager.getInstance().check(Manifest.permission.ACCESS_FINE_LOCATION)) {
             initGPS();
         }
@@ -123,9 +123,9 @@ public class TMapManager{
      */
     private void initGPS() {
         gps = new TMapGpsManager(mContext);
-        gps.setMinTime(2000);
-        gps.setMinDistance(5);
-        gps.setProvider(gps.GPS_PROVIDER);
+        gps.setMinTime(500);
+        gps.setMinDistance(1);
+        gps.setProvider(gps.NETWORK_PROVIDER);
         gps.OpenGps();
     }
 
