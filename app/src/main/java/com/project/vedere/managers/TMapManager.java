@@ -3,12 +3,12 @@ package com.project.vedere.managers;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.location.Location;
 import android.util.Log;
 
 import com.project.vedere.interfaces.PermissionCallback;
 import com.project.vedere.interfaces.TMapCallback;
 import com.project.vedere.utils.MyUtil;
+import com.project.vedere.utils.YamlParser;
 import com.skt.Tmap.TMapData;
 import com.skt.Tmap.TMapGpsManager;
 import com.skt.Tmap.TMapPoint;
@@ -45,7 +45,9 @@ public class TMapManager{
     }
 
     public TMapPoint getLocation() {
-        return gps.getLocation();
+        TMapPoint temp = mTMapView.getLocationPoint();
+        Log.d("location",temp.toString());
+        return mTMapView.getLocationPoint();
     }
 
     public void initManager(Activity activity, Context context, TMapCallback callback) {
@@ -65,7 +67,7 @@ public class TMapManager{
      * GPS 초기화
      */
     public void setGPS() {
-        PermissionManager.getInstance().setActivity(mActivity);
+        initGPS();
         if (PermissionManager.getInstance().check(Manifest.permission.ACCESS_FINE_LOCATION)) {
             initGPS();
         }
@@ -121,7 +123,7 @@ public class TMapManager{
      */
     private void initGPS() {
         gps = new TMapGpsManager(mContext);
-        gps.setMinTime(1000);
+        gps.setMinTime(2000);
         gps.setMinDistance(5);
         gps.setProvider(gps.GPS_PROVIDER);
         gps.OpenGps();
@@ -143,7 +145,6 @@ public class TMapManager{
             }
         });
     }
-
 }
 
 

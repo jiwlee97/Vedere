@@ -24,7 +24,7 @@ public class AngleManager{
         vibrator = (Vibrator)activity.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
-    public void callSetStartDirection(SensorEvent event){
+    public void callSetStartDirection(SensorEvent event,TMapPoint startPoint,TMapPoint arrivePoint){
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
             mGravity = event.values;
         if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
@@ -39,22 +39,20 @@ public class AngleManager{
                 float azimuth = (float) Math.toDegrees(orientation[0]);
                 if( azimuth<0.0f )
                     azimuth += 360.f;
-                TMapPoint startPoint = new TMapPoint(37569758,126977022);
-                TMapPoint arrivePoint = new TMapPoint(37570594,126997589);
                 setStartDirection(azimuth,startPoint,arrivePoint);
             }
         }
     }
 
-
-    public void setStartDirection(float azimuth, TMapPoint startPoint, TMapPoint arrivePoint) {
+    private void setStartDirection(float azimuth, TMapPoint startPoint, TMapPoint arrivePoint) {
+        Log.d("azimuth",Float.toString(azimuth));
+        Log.d("각도",(Float.toString(CalculateBearingAngle(startPoint,arrivePoint))));
         if(Math.abs(azimuth-CalculateBearingAngle(startPoint,arrivePoint))<=10.0f) {    // 나침반 방향과 가야할 방향이 같으면
             vibrator.vibrate(1000 ); // 1초간 진동
-            //Log.d("direction","올바른방향");
+            Log.d("direction","올바른방향");
         }
         else{   // 다르면
             vibrator.cancel();
-            //Log.d("direction","틀린방향");
         }
     }
 

@@ -30,6 +30,6 @@ public class TTSTestActivity extends AppCompatActivity implements TextToSpeech.O
     @Override
     protected void onResume() {
         super.onResume();
-        TTSManager.getInstance().speack("안녕하세요");
+        TTSManager.getInstance().speak("안녕하세요");
     }
 }

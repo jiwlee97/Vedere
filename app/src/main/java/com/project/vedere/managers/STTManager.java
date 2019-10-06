@@ -4,10 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.project.vedere.interfaces.PermissionCallback;
@@ -21,8 +21,9 @@ public class STTManager {
     private Intent intent;
     private SpeechRecognizer mRecognizer;
     private final int PERMISSION = 1;
-    private int status = 0;
+    private int status;
     ArrayList<String> matches;
+    String answer="";
 
 
     public STTManager(Activity activity){
@@ -87,7 +88,17 @@ public class STTManager {
 
 
     public void runmRecognizer(){
-        mRecognizer.startListening(intent);
+        status = 0;
+        if(Looper.myLooper() == Looper.getMainLooper())
+            mRecognizer.startListening(intent);
+        else {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mRecognizer.startListening(intent);
+                }
+            });
+        }
     }
 
     private RecognitionListener listener = new RecognitionListener() {
@@ -99,7 +110,6 @@ public class STTManager {
 
         @Override
         public void onBeginningOfSpeech() {
-            status = 0;
         }
 
         @Override
@@ -112,26 +122,14 @@ public class STTManager {
 
         @Override
         public void onEndOfSpeech() {
-            status = 1;
+
         }
 
         @Override
         public void onError(int error) {
-            status = 2;
-            String message;
+            status = 0;
+            String message="";
             switch (error){
-                case SpeechRecognizer.ERROR_AUDIO: {
-                    message = "오디오 에러입니다.";
-                    break;
-                }
-                case SpeechRecognizer.ERROR_CLIENT: {
-                    message = "클라이언트 에러입니다.";
-                    break;
-                }
-                case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:{
-                    message = "퍼미션이 없습니다.";
-                    break;
-                }
                 case SpeechRecognizer.ERROR_NETWORK:{
                     message = "네트워크 에러입니다.";
                     break;
@@ -161,16 +159,16 @@ public class STTManager {
                     break;
                 }
             }
-            Toast.makeText(activity.getApplicationContext(),"에러가 발생하였습니다.: "+message, Toast.LENGTH_SHORT).show();
+            TTSManager.getInstance().speak(message);
         }
 
         @Override
         public void onResults(Bundle results) {
+            answer = "";
             //말을 하면 ArrayList에 단어를 넣고 textView에 단어를 이어줍니다.
             matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-            for(int i=0;i<matches.size();++i) {
-                Log.d("stt", i + " " + matches.get(i));
-            }
+            answer = matches.get(0);
+            status = 1;
         }
 
         @Override
@@ -186,8 +184,8 @@ public class STTManager {
         return status;
     }
 
-    public ArrayList<String> getMatches() {
-        return matches;
+    public String getAnswer() {
+        return answer;
     }
 
 }

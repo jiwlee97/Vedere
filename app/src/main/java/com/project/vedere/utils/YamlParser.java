@@ -1,4 +1,4 @@
-package com.project.vedere.managers;
+package com.project.vedere.utils;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -7,7 +7,6 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Calendar;
 import java.util.Map;
 
 /**

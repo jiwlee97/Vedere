@@ -9,8 +9,8 @@
     tools:context=".controller.MainActivity">
 
     <Button
-        android:id="@+id/sttStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="음성인식 시작" />
+        android:id="@+id/stopVibrator"
+        android:layout_width="259dp"
+        android:layout_height="205dp"
+        android:text="출발" />
 </LinearLayout>
